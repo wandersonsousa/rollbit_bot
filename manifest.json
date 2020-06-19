@@ -1,0 +1,25 @@
+{
+    "manifest_version":2,
+    "name":"RollBit Bot BR",
+    "version": "0.1.1",
+    "icons": {"128":"icon.png"},
+    "content_scripts": [
+        {
+            "matches": ["https://www.rollbit.com/withdraw/steam"],
+            "css":["style.css"],
+            "js": ["jquery.js","injectPanelActions.js", "content.js" ]
+        }
+    ],
+    "browser_action": {
+   	 "default_title": "RollBit Bot BR",
+     "default_popup": "popup.html",
+     "default_icon":"icon.png"
+    },
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": true
+    },
+    "permissions": [
+        
+    ]
+}
