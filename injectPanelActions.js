@@ -3,7 +3,8 @@ const selX = {
     containerSkins:'/html/body/main/section[2]/div[2]/div/div[3]',
     btnForBuy: '/html/body/main/section[2]/div[2]/section/header/button',
     containerSkinsClickes: '/html/body/main/section[2]/div[2]/section/section',
-    withdrawalsLen:'/html/body/main/section[2]/div[2]/section/header'
+    withdrawalsLen:'/html/body/main/section[2]/div[2]/section/header',
+    loadMoreBtn:'/html/body/main/section[2]/div[2]/div/button',
 
 };
 const sel = {
@@ -25,7 +26,7 @@ function core(){
 
 function insertBotPanel(){
     const $mother = $('section.body');
-    
+
     $mother.prepend(`
         <style>
             #botContainer{
@@ -52,7 +53,7 @@ function insertBotPanel(){
                 transition: .2s ease-in-out;
                 outline: none;
             }
-            
+
             .btn-bot:hover {
                 box-shadow: 0 10px 46px rgba(0,0,0,1);
             }
@@ -95,13 +96,24 @@ function stopBot(){
 
 
 function startBot(){
+    if( botIntervalTime )stopBot();
     botRunner();
     botIntervalTime = setInterval( botRunner, 2000 );
 }
 
 function botRunner(){
+    clickLoadMoreBtn( $(_x(selX.containerSkins)).children().length );
     addSkinsInCart();
-    clickToBuy(0);
+    clickToBuy();
+}
+
+function clickLoadMoreBtn( skinsLen ){
+    $(_x(selX.loadMoreBtn)).click();
+    let currentSkinsLen =  $(_x(selX.containerSkins)).children().length;
+    if( skinsLen < currentSkinsLen ){
+        console.log('LOAD MORE SKINS...');
+        clickLoadMoreBtn(currentSkinsLen);
+    }
 }
 
 function addSkinsInCart(){
@@ -114,34 +126,24 @@ function addSkinsInCart(){
                 $(this).click()
                 console.log(`Comprado : ${skiName} de valor ${skinValue}`)
                 hasItemInCart = true
-            }    
-
+            } 
         }
     )
 }
 
-function clickToBuy( count ){
+function clickToBuy(){
     console.log('CHILDREN ABAIXO');
     console.log( $( _x(selX.withdrawalsLen)).text() );
-
-    if(count === 10){
-        return false;
-    }
     
     if( $( _x(selX.withdrawalsLen)).text() !== 'Withdrawals (0)' ){
-        function tryClick(){
-            try {
-                _x( selX.btnForBuy ).click();
-                console.log('Comprado com sucesso');
-            } catch (error) {
-                console.log('Falha ao comprar, verifique seu saldo, ou tente novamente.');
-            }
+        try {
+            _x( selX.btnForBuy ).click();
+            console.log('Comprado com sucesso');
+        } catch (error) {
+            console.log('Falha ao comprar, verifique seu saldo, ou tente novamente.');
         }
-        
-        return setTimeout( tryClick, 2000 );
+       
     }
-
-    setTimeout( ()=> clickToBuy(count += 1), 1000 );
 }
 
 
