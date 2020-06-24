@@ -1,18 +1,19 @@
 {
     "manifest_version":2,
     "name":"RollBit Bot BR",
+    "options_page": "options/options.html",
     "version": "0.1.1",
     "icons": {"128":"icon.png"},
     "content_scripts": [
         {
             "matches": ["https://www.rollbit.com/withdraw/steam"],
             "css":["style.css"],
-            "js": ["jquery.js","injectPanelActions.js", "content.js" ]
+            "js": ["jquery.js", "sendToDiscord.js","botCore.js", "content.js" ]
         }
     ],
     "browser_action": {
    	 "default_title": "RollBit Bot BR",
-     "default_popup": "popup.html",
+     "default_popup": "popup/popup.html",
      "default_icon":"icon.png"
     },
     "background": {
@@ -20,6 +21,8 @@
         "persistent": true
     },
     "permissions": [
-        
-    ]
+        "storage"
+    ],
+    "content_security_policy": "script-src 'self' https://code.jquery.com/jquery-3.3.1.slim.min.js https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js; object-src 'self'"
+    
 }
