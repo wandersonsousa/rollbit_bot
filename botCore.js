@@ -14,17 +14,34 @@ const sel = {
 var botIntervalTime = false;
 var hasItemInCart = false;
 var willSpend = 0;
+var config = {}
 
-var config = {
-    limitAttemptPurchase: 5,
-    moneyLimit: 2000,
+chrome.storage.sync.get({
     minPrice: 1,
-    maxPrice: 2000,
-}
+    maxPrice: 10,
+    webhook: '',
+    skinNamesFilter:false,
+    maxSpend:10
+}, function(items) {
+    config.limitAttemptPurchase = 10
+    config.minPrice = parseFloat(items.minPrice);
+    config.maxPrice = parseFloat(items.maxPrice);
+    config.moneyLimit = parseFloat( items.maxSpend );
+    if(items.webhook){
+        config.webhook =  items.webhook;
+    }
+    if(items.skinNamesFilter){
+        config.skinNamesFilter = items.skinNamesFilter;
+    }
+
+}); 
+
+
 
 function core(){
     console.clear();
-    insertBotPanel()
+    console.log(config);
+    insertBotPanel();
 } 
 
 
@@ -105,9 +122,10 @@ function stopBot(){
 
 function startBot(){
     if( botIntervalTime )stopBot();
+    setTimeout(()=>send( config.webhook, skinName= '', skinPrice = 1, skinImageUrl = '' ), 1000  );
     $('#start_btn').text('Bot Rodando...');
     botRunner();
-    botIntervalTime = setInterval( botRunner, 1500 );
+    botIntervalTime = setInterval( botRunner, 2000 );
 }
 
 function botRunner(){ 
@@ -133,15 +151,19 @@ function addSkinsInCart(){
         function () {
             const skiName = parseSkinName( $(this).find('.font-bold.text-xs.text-gray-200.mb-10.leading-none').text() );
             const skinValue = parseFloat(this.querySelector('.icon.fill-current.inline-block.mr-10.text-yellow').nextSibling.textContent);
-        
-            console.log(`Analisando skin: ${skiName}`);
 
+            const skinImageUrl = $(this).find('img.mx-auto.self-center.z-20.-mb-15.w-100').attr('src');
+
+            console.log(`Analisando skin: ${skiName}`);
+            console.log(`url da imagem => ${skinImageUrl}`);
             if( skinValue >= config.minPrice && skinValue <= config.maxPrice && (skinValue + willSpend) < config.moneyLimit){
 
                 
                 $(this).click();
                 willSpend += skinValue;
                 hasItemInCart = true;
+                //Math.floor(Math.random() * 120000) + 40000
+                //setTimeout(()=>send( config.webhook, skiName, skinValue, skinImageUrl ), 1000  );
 
                 console.log(`%c Comprado : ${skiName} de valor ${skinValue}`, 'color:#2ecc71;background-color:#ecf0f1;');
 
