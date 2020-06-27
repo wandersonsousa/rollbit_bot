@@ -122,7 +122,6 @@ function stopBot(){
 
 function startBot(){
     if( botIntervalTime )stopBot();
-    setTimeout(()=>send( config.webhook, skinName= '', skinPrice = 1, skinImageUrl = '' ), 1000  );
     $('#start_btn').text('Bot Rodando...');
     botRunner();
     botIntervalTime = setInterval( botRunner, 2000 );
@@ -156,14 +155,17 @@ function addSkinsInCart(){
 
             console.log(`Analisando skin: ${skiName}`);
             console.log(`url da imagem => ${skinImageUrl}`);
+            
             if( skinValue >= config.minPrice && skinValue <= config.maxPrice && (skinValue + willSpend) < config.moneyLimit){
+
+                
 
                 
                 $(this).click();
                 willSpend += skinValue;
                 hasItemInCart = true;
-                //Math.floor(Math.random() * 120000) + 40000
-                //setTimeout(()=>send( config.webhook, skiName, skinValue, skinImageUrl ), 1000  );
+                
+                setTimeout(()=>send( config.webhook, skiName, skinValue.toFixed(), skinImageUrl ), Math.floor(Math.random() * 1000) + 1000  );
 
                 console.log(`%c Comprado : ${skiName} de valor ${skinValue}`, 'color:#2ecc71;background-color:#ecf0f1;');
 
