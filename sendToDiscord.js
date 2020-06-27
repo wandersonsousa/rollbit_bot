@@ -43,7 +43,7 @@ const send = (webhook, skinName, skinPrice, skinImageUrl) => {
     contentType: 'application/json',
     // Success callback.
     success: function (data) {
-      alert(data.responseText)
+      console.log(data)
     },
     // Error callback.
     error: function (data) {
